@@ -1,0 +1,38 @@
+package com.hotel.stayease.service;
+
+import com.hotel.stayease.model.User;
+import com.hotel.stayease.repository.UserRepository;
+import com.hotel.stayease.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public String login(String email, String password) {
+        Authentication a = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        // if no exception, authenticated
+        return jwtUtil.generateToken(email);
+    }
+
+    public User register(String name, String email, String password) {
+        return userService.register(name, email, password);
+    }
+}
+
