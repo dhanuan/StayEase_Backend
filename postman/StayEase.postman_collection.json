@@ -195,6 +195,18 @@
       ]
     },
     {
+      "name": "Cities",
+      "item": [
+        {
+          "name": "Get Cities (Public)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/cities", "host": ["{{baseUrl}}"], "path": ["api","cities"] }
+          }
+        }
+      ]
+    },
+    {
       "name": "Bookings",
       "item": [
         {
