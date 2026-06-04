@@ -33,8 +33,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        String token = authService.login(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(new AuthResponse(token));
+        AuthResponse response = authService.login(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(response);
     }
 
     /**
