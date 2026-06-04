@@ -311,7 +311,7 @@ spring.jpa.hibernate.ddl-auto=update                       # Auto-create schema
 For issues or questions:
 1. Check the logs: Application startup logs show schema creation and JWT initialization
 2. Verify JWT secret is set in `application.properties`
-3. Ensure port 8080 is not in use: `netstat -ano | findstr ":8080"`
+3. Ensure port 8081 is not in use: `netstat -ano | findstr ":8081"`
 4. Review GlobalExceptionHandler for error response format
 5. Check test results: `.\gradlew.bat test`
 

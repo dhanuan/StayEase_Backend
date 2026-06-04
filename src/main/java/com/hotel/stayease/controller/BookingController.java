@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -39,7 +40,7 @@ public class BookingController {
     public ResponseEntity<?> cancel(@PathVariable Long id) {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         bookingService.cancelBooking(id, email);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(Map.of("message", "Booking cancelled", "id", id));
     }
 }
 

@@ -25,12 +25,15 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            if (jwtUtil.validateToken(token)) {
+            if (!tokenBlacklist.isBlacklisted(token) && jwtUtil.validateToken(token)) {
                 String email = jwtUtil.extractSubject(token);
                 if (email != null) {
                     User user = userRepository.findByEmail(email).orElse(null);

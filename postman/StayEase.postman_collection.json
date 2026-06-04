@@ -1,0 +1,232 @@
+{
+  "info": {
+    "name": "StayEase Backend",
+    "_postman_id": "stayease-collection-001",
+    "description": "Controller-wise Postman collection for StayEase Backend (Auth, Hotels, Rooms, Bookings).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api","auth","register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}" }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const j = pm.response.json();",
+                  "  if (j.token) pm.environment.set('token', j.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}" }
+          }
+        },
+        {
+          "name": "Register With Role (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/auth/register-admin", "host": ["{{baseUrl}}"], "path": ["api","auth","register-admin"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Bob Manager\",\n  \"email\": \"bob@stayease.com\",\n  \"password\": \"managerpass\",\n  \"role\": \"MANAGER\"\n}" },
+            "description": "Admin-only endpoint to create a user with a specified role (GUEST | MANAGER | ADMIN). Requires an ADMIN JWT in {{token}} (login as admin@stayease.com first)."
+          }
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 204 || pm.response.code === 200) {",
+                  "  pm.environment.unset('token');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/logout", "host": ["{{baseUrl}}"], "path": ["api","auth","logout"] },
+            "description": "Invalidates the current JWT by adding it to the server-side blacklist. Returns 204 No Content. Subsequent requests with the same token will be rejected."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hotels",
+      "item": [
+        {
+          "name": "Search Hotels (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels?city=Mumbai&minStars=3&page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api","hotels"],
+              "query": [
+                { "key": "city", "value": "Mumbai" },
+                { "key": "minStars", "value": "3" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Available Rooms (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/1/rooms?checkIn=2026-06-10&checkOut=2026-06-15",
+              "host": ["{{baseUrl}}"], "path": ["api","hotels","1","rooms"],
+              "query": [
+                { "key": "checkIn", "value": "2026-06-10" },
+                { "key": "checkOut", "value": "2026-06-15" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Hotel (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/hotels", "host": ["{{baseUrl}}"], "path": ["api","hotels"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Grand Plaza\",\n  \"city\": \"Mumbai\",\n  \"starRating\": 5,\n  \"description\": \"Luxury hotel\",\n  \"coverImageUrl\": \"https://example.com/cover.jpg\",\n  \"managerId\": 2\n}" }
+          }
+        },
+        {
+          "name": "Update Hotel (ADMIN)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/hotels/1", "host": ["{{baseUrl}}"], "path": ["api","hotels","1"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Grand Plaza Updated\",\n  \"city\": \"Mumbai\",\n  \"starRating\": 5,\n  \"description\": \"Updated description\",\n  \"coverImageUrl\": \"https://example.com/cover2.jpg\",\n  \"managerId\": 2\n}" }
+          }
+        },
+        {
+          "name": "Delete Hotel (ADMIN)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/hotels/1", "host": ["{{baseUrl}}"], "path": ["api","hotels","1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rooms",
+      "item": [
+        {
+          "name": "Create Room (MANAGER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/hotels/1/rooms", "host": ["{{baseUrl}}"], "path": ["api","hotels","1","rooms"] },
+            "body": { "mode": "raw", "raw": "{\n  \"roomNumber\": \"101\",\n  \"roomType\": \"DOUBLE\",\n  \"pricePerNight\": 2499.00,\n  \"maxOccupancy\": 2,\n  \"description\": \"Sea-view double room\",\n  \"imageUrl\": \"https://example.com/room101.jpg\",\n  \"active\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Room (MANAGER)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/rooms/10", "host": ["{{baseUrl}}"], "path": ["api","rooms","10"] },
+            "body": { "mode": "raw", "raw": "{\n  \"roomNumber\": \"101\",\n  \"roomType\": \"SUITE\",\n  \"pricePerNight\": 4999.00,\n  \"maxOccupancy\": 3,\n  \"description\": \"Upgraded to suite\",\n  \"imageUrl\": \"https://example.com/room101.jpg\",\n  \"active\": true\n}" }
+          }
+        },
+        {
+          "name": "Delete Room (MANAGER)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rooms/10", "host": ["{{baseUrl}}"], "path": ["api","rooms","10"] }
+          }
+        },
+        {
+          "name": "Toggle Room Status (MANAGER)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/rooms/10/status", "host": ["{{baseUrl}}"], "path": ["api","rooms","10","status"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/bookings", "host": ["{{baseUrl}}"], "path": ["api","bookings"] },
+            "body": { "mode": "raw", "raw": "{\n  \"roomId\": 10,\n  \"checkInDate\": \"2026-06-10\",\n  \"checkOutDate\": \"2026-06-15\"\n}" }
+          }
+        },
+        {
+          "name": "My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bookings/mine", "host": ["{{baseUrl}}"], "path": ["api","bookings","mine"] }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bookings/5/cancel", "host": ["{{baseUrl}}"], "path": ["api","bookings","5","cancel"] }
+          }
+        }
+      ]
+    }
+  ]
+}
+

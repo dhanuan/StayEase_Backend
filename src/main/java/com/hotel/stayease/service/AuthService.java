@@ -34,5 +34,9 @@ public class AuthService {
     public User register(String name, String email, String password) {
         return userService.register(name, email, password);
     }
+
+    public User registerWithRole(String name, String email, String password, String role) {
+        return userService.register(name, email, password, role);
+    }
 }
 
