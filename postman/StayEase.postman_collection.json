@@ -102,6 +102,21 @@
           }
         },
         {
+          "name": "List All Hotels (Public, optional name & city filter)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/hotels/all?name=&city=",
+              "host": ["{{baseUrl}}"], "path": ["api","hotels","all"],
+              "query": [
+                { "key": "name", "value": "", "description": "Optional: partial hotel name match" },
+                { "key": "city", "value": "", "description": "Optional: exact city match (case-insensitive)" }
+              ]
+            },
+            "description": "Returns a list of hotels with fields: name, city, stars, managerId. Both query params are optional."
+          }
+        },
+        {
           "name": "Get Available Rooms (Public)",
           "request": {
             "method": "GET",

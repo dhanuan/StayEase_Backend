@@ -24,6 +24,10 @@ public class HotelService {
         return hotelRepository.findByCityIgnoreCase(city);
     }
 
+    public List<Hotel> findAll() {
+        return hotelRepository.findAll();
+    }
+
     public Optional<Hotel> findById(Long id) { return hotelRepository.findById(id); }
 
     public Hotel save(Hotel hotel) { return hotelRepository.save(hotel); }

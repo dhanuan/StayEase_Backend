@@ -1,6 +1,7 @@
 package com.hotel.stayease.controller;
 
 import com.hotel.stayease.dto.HotelDto;
+import com.hotel.stayease.dto.HotelSummaryDto;
 import com.hotel.stayease.dto.RoomDto;
 import com.hotel.stayease.model.Hotel;
 import com.hotel.stayease.model.Room;
@@ -44,6 +45,24 @@ public class HotelController {
         int from = Math.min(page * size, hotels.size());
         int to = Math.min(from + size, hotels.size());
         List<HotelDto> dtos = hotels.subList(from, to).stream().map(HotelMapper::toDto).toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> listAll(@RequestParam(required = false) String name,
+                                     @RequestParam(required = false) String city) {
+        List<Hotel> hotels = (city == null || city.isBlank())
+                ? hotelService.findAll()
+                : hotelService.findByCity(city);
+        if (name != null && !name.isBlank()) {
+            String q = name.toLowerCase();
+            hotels = hotels.stream()
+                    .filter(h -> h.getName() != null && h.getName().toLowerCase().contains(q))
+                    .toList();
+        }
+        List<HotelSummaryDto> dtos = hotels.stream()
+                .map(h -> new HotelSummaryDto(h.getName(), h.getCity(), h.getStarRating(), h.getManagerId()))
+                .toList();
         return ResponseEntity.ok(dtos);
     }
 
