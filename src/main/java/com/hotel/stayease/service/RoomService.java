@@ -7,6 +7,7 @@ import com.hotel.stayease.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,5 +30,7 @@ public class RoomService {
     public Room update(Room r) { return roomRepository.save(r); }
 
     public void delete(Long id) { roomRepository.deleteById(id); }
+
+    public List<Room> findByHotelId(Long hotelId) { return roomRepository.findByHotelId(hotelId); }
 }
 

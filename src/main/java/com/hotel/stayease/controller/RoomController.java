@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class RoomController {
 
@@ -25,6 +27,18 @@ public class RoomController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @GetMapping("/api/hotels/{hotelId}/rooms/all")
+    public ResponseEntity<?> getAllRoomsByHotel(@PathVariable Long hotelId) {
+        if (hotelRepository.findById(hotelId).isEmpty()) {
+            return ResponseEntity.status(404).body(java.util.Map.of(
+                    "message", "Hotel not found", "hotelId", hotelId));
+        }
+        List<RoomDto> rooms = roomService.findByHotelId(hotelId).stream()
+                .map(com.hotel.stayease.service.mapper.RoomMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(rooms);
+    }
 
     @PostMapping("/api/hotels/{hotelId}/rooms")
     @PreAuthorize("hasRole('MANAGER')")

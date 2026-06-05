@@ -24,6 +24,10 @@ public class HotelService {
         return hotelRepository.findByCityIgnoreCase(city);
     }
 
+    public List<Hotel> findByManagerId(Long managerId) {
+        return hotelRepository.findByManagerId(managerId);
+    }
+
     public List<Hotel> findAll() {
         return hotelRepository.findAll();
     }

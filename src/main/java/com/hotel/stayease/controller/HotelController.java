@@ -2,6 +2,7 @@ package com.hotel.stayease.controller;
 
 import com.hotel.stayease.dto.HotelDto;
 import com.hotel.stayease.dto.HotelSummaryDto;
+import com.hotel.stayease.dto.HotelByManagerDto;
 import com.hotel.stayease.dto.RoomDto;
 import com.hotel.stayease.model.Hotel;
 import com.hotel.stayease.model.Room;
@@ -62,6 +63,14 @@ public class HotelController {
         }
         List<HotelSummaryDto> dtos = hotels.stream()
                 .map(h -> new HotelSummaryDto(h.getName(), h.getCity(), h.getStarRating(), h.getManagerId()))
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/by-manager/{managerId}")
+    public ResponseEntity<?> getHotelsByManager(@PathVariable Long managerId) {
+        List<HotelByManagerDto> dtos = hotelService.findByManagerId(managerId).stream()
+                .map(h -> new HotelByManagerDto(h.getId(), h.getName(), h.getCity()))
                 .toList();
         return ResponseEntity.ok(dtos);
     }

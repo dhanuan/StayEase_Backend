@@ -96,6 +96,14 @@ public class DataLoader {
                     "Trendy boutique hotel in the heart of Bandra West.",
                     "https://images.unsplash.com/photo-1571896349842-33c89424de2d",
                     "Anjali Shah", "anjali.shah@stayease.com");
+
+            // Extra hotel assigned to an existing manager (Ravi Kumar already manages "Bengaluru Skyline Inn").
+            // Demonstrates a single manager handling 2 hotels.
+            seedCityHotel(userRepository, hotelRepository, roomRepository, encoder,
+                    "Bengaluru", "Indiranagar Business Hotel", 4,
+                    "Contemporary business hotel near 100ft Road, Indiranagar.",
+                    "https://images.unsplash.com/photo-1578683010236-d716f9a3f461",
+                    "Ravi Kumar", "ravi.kumar@stayease.com");
         };
     }
 
