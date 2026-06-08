@@ -247,6 +247,18 @@
       "name": "Users",
       "item": [
         {
+          "name": "Get All Managers (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/managers",
+              "host": ["{{baseUrl}}"], "path": ["api","users","managers"]
+            },
+            "description": "Returns all users with role MANAGER (managerId, managerName, email). Requires an ADMIN JWT in {{token}}."
+          }
+        },
+        {
           "name": "Get Manager ID By Email (MANAGER)",
           "request": {
             "method": "GET",

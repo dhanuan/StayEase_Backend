@@ -88,6 +88,16 @@ public class HotelController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createHotel(@RequestBody Hotel hotel) {
+        if (hotel.getManagerId() == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "managerId is required"));
+        }
+        User manager = userRepository.findById(hotel.getManagerId()).orElse(null);
+        if (manager == null || !"MANAGER".equalsIgnoreCase(manager.getRole())) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "message", "Manager not valid",
+                    "managerId", hotel.getManagerId()
+            ));
+        }
         Hotel saved = hotelService.save(hotel);
         return ResponseEntity.status(201).body(HotelMapper.toDto(saved));
     }

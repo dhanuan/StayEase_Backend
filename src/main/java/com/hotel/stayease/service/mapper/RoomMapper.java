@@ -13,6 +13,7 @@ public class RoomMapper {
         d.setMaxOccupancy(r.getMaxOccupancy());
         d.setDescription(r.getDescription());
         d.setImageUrl(r.getImageUrl());
+        d.setActive(r.isActive());
         // optionally include hotel info in DTO in future
         return d;
     }
